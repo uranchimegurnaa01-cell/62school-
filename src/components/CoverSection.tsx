@@ -25,47 +25,25 @@ export default function CoverSection() {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-transparent to-[#1b3a5c]/90 pointer-events-none" />
       </div>
 
-      {/* Top Header / Date & Poetic Motto Area */}
-      <div className="relative z-10 pt-10 sm:pt-14 px-6 text-center max-w-xl mx-auto flex flex-col items-center">
+      {/* Top Header / Date Area */}
+      <div className="relative z-10 pt-12 sm:pt-16 px-6 text-center max-w-xl mx-auto flex flex-col items-center">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="inline-flex items-center gap-2 mb-2"
+          className="inline-flex items-center justify-center gap-3 mb-3"
         >
-          <span className="h-px w-8 bg-amber-200/70" />
-          <span className="font-serif-title tracking-[0.35em] uppercase text-xs sm:text-sm text-amber-200 font-light">
+          <span className="h-px w-8 sm:w-12 bg-gradient-to-r from-transparent to-amber-200/80" />
+          <span className="font-serif-title tracking-[0.35em] uppercase text-xs sm:text-sm md:text-base text-amber-200 font-light drop-shadow-sm">
             ХҮНДЭТГЭЛИЙН УРИЛГА
           </span>
-          <span className="h-px w-8 bg-amber-200/70" />
-        </motion.div>
-
-        {/* Poetic line with elegant ornamental dividers */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.8 }}
-          className="my-2.5 flex items-center justify-center gap-3 w-full max-w-md"
-        >
-          <div className="flex items-center gap-1 flex-1 justify-end">
-            <span className="h-px w-12 sm:w-16 bg-gradient-to-r from-transparent to-amber-300/60" />
-            <span className="w-1.5 h-1.5 rotate-45 border border-amber-300/70 bg-amber-200/40" />
-          </div>
-          
-          <p className="font-serif-title italic text-amber-100/95 text-xs sm:text-sm md:text-[15px] tracking-wide px-1 drop-shadow-sm whitespace-nowrap">
-            "Мэдлэгийн их далайд хөлөг онгоц шиг аялж..."
-          </p>
-
-          <div className="flex items-center gap-1 flex-1 justify-start">
-            <span className="w-1.5 h-1.5 rotate-45 border border-amber-300/70 bg-amber-200/40" />
-            <span className="h-px w-12 sm:w-16 bg-gradient-to-l from-transparent to-amber-300/60" />
-          </div>
+          <span className="h-px w-8 sm:w-12 bg-gradient-to-l from-transparent to-amber-200/80" />
         </motion.div>
 
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
+          transition={{ delay: 0.2, duration: 0.8 }}
           className="text-xs sm:text-sm tracking-[0.25em] text-white/90 font-mono"
         >
           {WEDDING_DATA.formattedDate}
