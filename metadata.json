@@ -1,0 +1,8 @@
+{
+  "name": "Remix Нийслэлийн ерөнхий боловсролын 62 дугаар сургууль",
+  "description": "Сургуулийн түүхт 50жилийн ойн мэндийг дэвшүүлье",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

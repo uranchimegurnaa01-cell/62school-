@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+.font-serif-title {
+  font-family: 'Playfair Display', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-calligraphy {
+  font-family: 'Marck Script', 'Caveat', cursive;
+}
+
+.font-script {
+  font-family: 'Caveat', cursive;
+}
+
+.font-garamond {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+/* Scalloped decorative border wave matching the video */
+.scallop-top {
+  mask-image: radial-gradient(circle at 10px -5px, transparent 12px, white 13px);
+  mask-size: 20px 20px;
+  mask-repeat: repeat-x;
+}
+
+.scallop-bottom {
+  mask-image: radial-gradient(circle at 10px 25px, transparent 12px, white 13px);
+  mask-size: 20px 20px;
+  mask-repeat: repeat-x;
+}
+
+/* Hide scrollbars for smooth mobile feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
