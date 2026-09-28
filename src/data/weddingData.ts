@@ -8,14 +8,15 @@ export const WEDDING_DATA = {
   formattedTime: '17:00',
   venueName: 'The Corporate',
   locationCity: 'Улаанбаатар хот, Монгол',
-  venueAddress: 'Хан-Уул дүүрэг, 15-р хороо,The Corporate',
-  googleMapsUrl: 'Mahatma Gandhi street-39, Khan-Uul district 15th khoroo, Ulaanbaatar, Mongolia, 17013',
+  venueAddress: 'Хан-Уул дүүрэг, 15-р хороо, The Corporate Hotel and Convention Centre',
+  mapUrl: 'https://maps.apple.com/place?place-id=I15F8266DA4124870&address=Mahatma+Gandhi+street-39%2C+Khan-Uul+district+15th+khoroo%2C+Ulaanbaatar%2C+Mongolia&coordinate=47.903850%2C106.922647&name=The+Corporate+Hotel+and+Convention+Centre&_provider=9902',
+  googleMapsUrl: 'https://maps.apple.com/place?place-id=I15F8266DA4124870&address=Mahatma+Gandhi+street-39%2C+Khan-Uul+district+15th+khoroo%2C+Ulaanbaatar%2C+Mongolia&coordinate=47.903850%2C106.922647&name=The+Corporate+Hotel+and+Convention+Centre&_provider=9902',
   contactPhoneGroom: '+976 90059016',
   contactPhoneBride: '+976 88056804',
 
   // Google Sheets Webhook URL for RSVP synchronization
   // If provided, all RSVPs will automatically be sent to your Google Sheet!
-  googleSheetsWebhookUrl: '',
+  googleSheetsWebhookUrl: 'https://script.google.com/macros/s/AKfycbyKyZY9IZbcQgVFpBf8pFU-Xtf-9UqxJp8Kny93wiS2sa6DZoLJn5m7ZGhfJdsB4BYO/exec',
 
   // Cover & Invitation poem from video
   invitationPoem: [
@@ -62,9 +63,9 @@ export const WEDDING_DATA = {
     {
       id: '5',
       date: '2015.09.01',
-      title: 'Бидний сургалт',
-      description: 'Ээлтэй сургууль ирээдүй гэрэл гэгээ...',
-      image: 'https://lh3.googleusercontent.com/d/16558bT2lC-c16CtShbLfhEgOgHIwprao',
+      title: 'Сайн дурын үйл ажиллагаа',
+      description: 'Монголын Улаан Загалмайн нийгэмлэг, хүмүүнлэгийн сайн дурын үйлс...',
+      image: '/IMG_7570.jpeg',
     }
   ] as StorySlide[],
 

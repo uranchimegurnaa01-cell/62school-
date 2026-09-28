@@ -13,10 +13,10 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
 
   // Ойн арга хэмжээний мэдээлэл
   const eventDetails = {
-    title: 'Нийслэлийн ерөнхий боловсролын түүхт 50 жилийн ой',
+    title: 'Нийслэлийн ерөнхий боловсролын 62 дугаар сургууль',
     description: 'Эрдмийн их уурхай, эрдэмтэн багш нар, үе үеийн төгсөгчдийн түүхт 50 жилийн ойн баярын арга хэмжээ',
-    venueName: 'Сургуулийн төв талбай',
-    venueAddress: 'Эрдмийн өргөө 1-р гудамж',
+    venueName: 'The Corporate Hotel',
+    venueAddress: 'Хан-Уул дүүрэг, 15-р хороо',
     locationCity: 'Улаанбаатар хот',
   };
 
@@ -40,9 +40,8 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
   };
 
   const handleAddToCalendar = () => {
-    // Google Calendar-т ойн баярын цагийг сануулах холбоос
-    const startTime = '20260816T170000';
-    const endTime = '20260816T235900';
+    const startTime = '20261007T170000';
+    const endTime = '20261007T235900';
     const title = encodeURIComponent(`Ойн баяр: ${eventDetails.title}`);
     const details = encodeURIComponent(eventDetails.description);
     const location = encodeURIComponent(`${eventDetails.venueName}, ${eventDetails.venueAddress}`);
@@ -51,22 +50,22 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
   };
 
   return (
-    <section id="closing-section" className="relative w-full bg-slate-900 text-white py-16 sm:py-20 px-4 sm:px-8 text-center overflow-hidden">
-      {/* Background Gala Jubilee Ambience matching the top section */}
+    <section id="closing-section" className="relative w-full bg-[#FAF6F0] text-slate-800 py-16 sm:py-20 px-4 sm:px-8 text-center overflow-hidden">
+      {/* Background Gala Jubilee Ambience with luminous gentle overlay */}
       <div className="absolute inset-0 z-0">
         <img
           src={smoothGalaBg}
           alt="50 жилийн ойн баярын төгсгөлийн фон"
-          className="w-full h-full object-cover object-center filter brightness-[0.75] contrast-[1.1]"
+          className="w-full h-full object-cover object-center filter brightness-[1.1] contrast-[0.95] opacity-30"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1b3a5c]/95 via-slate-950/80 to-slate-950/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFF5EC]/90 via-[#FFF9F2]/80 to-[#FAF6F0]/95 pointer-events-none" />
       </div>
 
       {/* Background ambient lighting */}
       <div className="absolute inset-0 pointer-events-none opacity-40 z-0">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-sky-500/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-10 right-10 w-64 h-64 bg-amber-400/15 rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-amber-200/40 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-10 right-10 w-64 h-64 bg-rose-200/35 rounded-full blur-3xl" />
       </div>
 
       <div className="relative z-10 max-w-md mx-auto flex flex-col items-center">
@@ -76,9 +75,9 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
           whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7 }}
-          className="bg-white p-3 pb-6 rounded-xl shadow-2xl border-4 border-amber-200/90 max-w-[260px] sm:max-w-[280px] text-neutral-800 mb-8"
+          className="bg-white p-3.5 pb-6 rounded-3xl shadow-[0_20px_50px_rgba(180,120,60,0.18)] border-4 border-amber-300 max-w-[270px] sm:max-w-[290px] text-neutral-800 mb-8"
         >
-          <div className="relative aspect-square rounded-lg overflow-hidden mb-3">
+          <div className="relative aspect-square rounded-2xl overflow-hidden mb-3 shadow-inner">
             <img
               src={schoolBuildingImg}
               alt={eventDetails.title}
@@ -86,11 +85,11 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
               referrerPolicy="no-referrer"
             />
           </div>
-          <p className="font-calligraphy text-base sm:text-lg font-bold text-neutral-700 leading-snug">
+          <p className="font-calligraphy text-base sm:text-lg font-bold text-neutral-900 leading-snug">
             {eventDetails.title}
           </p>
-          <p className="text-[10px] font-mono text-neutral-400 mt-1">
-            2026.10.07
+          <p className="text-[11px] font-mono text-amber-800 font-extrabold mt-1">
+            1976 - 2026 (50 ЖИЛ)
           </p>
         </motion.div>
 
@@ -101,47 +100,47 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
           viewport={{ once: true }}
           className="space-y-3 mb-8"
         >
-          <p className="text-xs sm:text-sm text-amber-100/90 leading-relaxed px-2">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed px-2">
             Эрдэм мэдлэгийн оч бадрааж, ирээдүйн эздийг бэлтгэсэн сургуулийн маань түүхэн замнал, эрдмийн өргөөний 50 жилийн ой тохиож байна.
           </p>
-          <h2 className="font-serif-title text-xl sm:text-2xl font-light text-amber-100 leading-snug px-4">
+          <h2 className="font-serif-title text-xl sm:text-2xl font-bold text-slate-900 leading-snug px-4">
             Үе үеийн төгсөгчид, багш та бүхэнтэйгээ уулзахыг тэсэн ядан хүлээж байна!
           </h2>
-          <p className="font-calligraphy text-xl sm:text-2xl text-amber-300 drop-shadow-sm">
+          <p className="font-calligraphy text-xl sm:text-2xl text-amber-800">
             {eventDetails.title}
           </p>
         </motion.div>
 
-        {/* Traditional Mongolian Motif */}
-        <div className="text-amber-300/60 text-2xl mb-8 select-none">
+        {/* Traditional Motif */}
+        <div className="text-amber-500 text-2xl mb-8 select-none font-serif">
           ❖ ❖ ❖
         </div>
 
-        {/* Action Buttons */}
+        {/* Action Buttons - Luminous Ivory and Gold */}
         <div className="w-full space-y-3 pt-2">
           <div className="grid grid-cols-2 gap-3">
             <button
               type="button"
               onClick={handleAddToCalendar}
-              className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-amber-100 flex items-center justify-center gap-1.5 border border-amber-200/20 cursor-pointer transition shadow-sm"
+              className="py-3 px-3 rounded-xl bg-white hover:bg-amber-50/60 text-xs text-amber-900 flex items-center justify-center gap-1.5 border-2 border-amber-300 cursor-pointer transition shadow-sm font-semibold"
             >
-              <Calendar className="w-3.5 h-3.5 text-amber-200" />
+              <Calendar className="w-4 h-4 text-amber-600" />
               <span>Календарт нэмэх</span>
             </button>
 
             <button
               type="button"
               onClick={handleShare}
-              className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-xs text-amber-100 flex items-center justify-center gap-1.5 border border-amber-200/20 cursor-pointer transition shadow-sm"
+              className="py-3 px-3 rounded-xl bg-white hover:bg-amber-50/60 text-xs text-amber-900 flex items-center justify-center gap-1.5 border-2 border-amber-300 cursor-pointer transition shadow-sm font-semibold"
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  <span className="text-emerald-300 font-medium">Хуулагдлаа</span>
+                  <Check className="w-4 h-4 text-emerald-600" />
+                  <span className="text-emerald-700 font-bold">Хуулагдлаа</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-3.5 h-3.5 text-amber-200" />
+                  <Share2 className="w-4 h-4 text-amber-600" />
                   <span>Холбоос хуулах</span>
                 </>
               )}
@@ -151,15 +150,15 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
           <button
             type="button"
             onClick={onReopenEnvelope}
-            className="w-full py-2.5 px-4 rounded-xl bg-white/5 hover:bg-white/10 text-xs text-neutral-200 flex items-center justify-center gap-1.5 border border-white/15 cursor-pointer transition"
+            className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 hover:brightness-105 text-xs text-amber-950 font-bold flex items-center justify-center gap-2 border-2 border-white cursor-pointer transition shadow-md"
           >
-            <Mail className="w-3.5 h-3.5 text-amber-200" />
+            <Mail className="w-4 h-4 text-amber-900" />
             <span>Дугтуйг дахин харах</span>
           </button>
         </div>
 
         {/* Footer info */}
-        <div className="mt-12 text-[11px] text-neutral-300/80 font-light">
+        <div className="mt-12 text-[11px] text-slate-500 font-medium">
           {eventDetails.venueName} · {eventDetails.locationCity}
         </div>
       </div>

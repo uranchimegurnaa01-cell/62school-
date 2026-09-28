@@ -1,11 +1,12 @@
 import { motion } from 'motion/react';
+import { Sparkles } from 'lucide-react';
 import { WEDDING_DATA } from '../data/weddingData';
 
 export default function WeddingRequestsSection() {
   return (
-    <section id="requests-section" className="relative w-full bg-[#1b3a5c] text-white py-16 sm:py-20 px-4 sm:px-8">
+    <section id="requests-section" className="relative w-full bg-gradient-to-b from-[#FAF6F0] via-[#FFF9F2] to-[#FFF5EC] text-slate-800 py-16 sm:py-20 px-4 sm:px-8 overflow-hidden">
       {/* Decorative top wave */}
-      <div className="absolute -top-1 inset-x-0 overflow-hidden leading-none text-[#faf6f0]">
+      <div className="absolute -top-1 inset-x-0 overflow-hidden leading-none text-[#FFF9F2]">
         <svg
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"
@@ -15,31 +16,35 @@ export default function WeddingRequestsSection() {
         </svg>
       </div>
 
-      <div className="max-w-md mx-auto text-center">
-        {/* Title matching video frame 00:21 */}
+      <div className="max-w-md mx-auto text-center relative z-10">
+        {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="mb-8"
         >
-          <h2 className="font-calligraphy text-4xl sm:text-5xl text-amber-100 font-normal">
+          <div className="inline-flex items-center gap-1.5 text-amber-800 text-xs uppercase tracking-widest mb-1 font-mono font-bold bg-white/80 px-3.5 py-1 rounded-full border border-amber-200">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Хүсэлт ба зөвлөмж</span>
+          </div>
+          <h2 className="font-calligraphy text-4xl sm:text-5xl text-amber-950 font-normal">
            Хүсэлт
           </h2>
-          <div className="w-16 h-px bg-amber-300/40 mx-auto mt-2" />
+          <div className="w-20 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent mx-auto mt-2" />
         </motion.div>
 
-        {/* Note Paragraph matching video */}
+        {/* Note Paragraph */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-xs sm:text-sm text-amber-100/90 font-light leading-relaxed mb-8 max-w-sm mx-auto"
+          className="text-xs sm:text-sm text-slate-600 font-light leading-relaxed mb-8 max-w-sm mx-auto"
         >
           Энэхүү мөчид бидэнтэй хамтдаа бүтээж, нэгэн үдшийг дурсамж дүүрэн өнгөрүүлье.
         </motion.p>
 
-        {/* Two Guideline Cards matching video */}
+        {/* Guideline Cards - Luminous White with Golden Borders */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-left">
           {WEDDING_DATA.guidelineCards.map((card, idx) => (
             <motion.div
@@ -48,12 +53,12 @@ export default function WeddingRequestsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 + idx * 0.1, duration: 0.5 }}
-              className="p-4 rounded-xl bg-white/10 backdrop-blur-xs border border-white/15"
+              className="p-4 rounded-2xl bg-white/95 backdrop-blur-md border-2 border-amber-200 shadow-[0_6px_20px_rgba(180,120,60,0.08)]"
             >
-              <h3 className="text-xs sm:text-sm font-medium text-amber-200 mb-1">
+              <h3 className="text-xs sm:text-sm font-bold text-amber-900 mb-1">
                 {card.title}:
               </h3>
-              <p className="text-[11px] sm:text-xs text-neutral-100/90 font-light leading-relaxed">
+              <p className="text-[11px] sm:text-xs text-slate-600 font-light leading-relaxed">
                 {card.text}
               </p>
             </motion.div>
@@ -62,7 +67,7 @@ export default function WeddingRequestsSection() {
       </div>
 
       {/* Decorative bottom wave */}
-      <div className="absolute -bottom-1 inset-x-0 overflow-hidden leading-none text-[#faf6f0]">
+      <div className="absolute -bottom-1 inset-x-0 overflow-hidden leading-none text-[#FFF5EC]">
         <svg
           viewBox="0 0 1200 120"
           preserveAspectRatio="none"

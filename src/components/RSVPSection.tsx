@@ -1,6 +1,6 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { UserCheck, Minus, Plus, CheckCircle2, FileSpreadsheet, Settings, ExternalLink, HelpCircle, Loader2 } from 'lucide-react';
+import { UserCheck, Minus, Plus, CheckCircle2, FileSpreadsheet, Settings, Loader2, Copy, Check, Sparkles, AlertCircle } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { RSVPRecord } from '../types';
 import { getGoogleSheetUrl, saveGoogleSheetUrl, sendRSVPToGoogleSheet } from '../utils/googleSheets';
@@ -18,6 +18,7 @@ export default function RSVPSection() {
   const [showConfigModal, setShowConfigModal] = useState(false);
   const [sheetUrlInput, setSheetUrlInput] = useState('');
   const [isUrlSaved, setIsUrlSaved] = useState(false);
+  const [copiedCode, setCopiedCode] = useState(false);
 
   useEffect(() => {
     setSheetUrlInput(getGoogleSheetUrl());
@@ -41,6 +42,53 @@ export default function RSVPSection() {
     if (guestCount > 1) setGuestCount((c) => c - 1);
   };
 
+  const copyAppsScriptCode = () => {
+    const code = `function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Эхний мөр хоосон бол багануудын нэр үүсгэх
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow(["Огноо", "Нэр", "Ирц", "Хүний тоо", "Утасны дугаар"]);
+      sheet.getRange(1, 1, 1, 5).setFontWeight("bold").setBackground("#FEF3C7");
+    }
+    
+    var data = {};
+    if (e && e.postData && e.postData.contents) {
+      try {
+        data = JSON.parse(e.postData.contents);
+      } catch (jsonErr) {
+        data = e.parameter || {};
+      }
+    } else if (e && e.parameter) {
+      data = e.parameter;
+    }
+
+    var rowDate = data.date || new Date().toLocaleString("mn-MN");
+    var rowName = data.name || "Нэргүй";
+    var rowAttending = (data.attending === true || data.attending === "Тийм, ирнэ" || data.attending === "Оролцоно") ? "Тийм, ирнэ" : "Очиж чадахгүй";
+    var rowCount = data.guestCount !== undefined ? data.guestCount : 1;
+    var rowPhone = data.phone ? "'" + data.phone : "";
+
+    sheet.appendRow([rowDate, rowName, rowAttending, rowCount, rowPhone]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (error) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+// Тест хийхэд зориулсан функц (хөтчөөс шалгахад)
+function doGet(e) {
+  return ContentService.createTextOutput("Google Apps Script амжилттай ажиллаж байна!");
+}`;
+    navigator.clipboard.writeText(code);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2500);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
@@ -58,82 +106,84 @@ export default function RSVPSection() {
 
     // Save locally to localStorage
     try {
-      const existing = localStorage.getItem('wedding_rsvps');
-      const list = existing ? JSON.parse(existing) : [];
-      localStorage.setItem('wedding_rsvps', JSON.stringify([...list, record]));
+      const existing = localStorage.getItem('school_anniversary_rsvps');
+      const rsvps: RSVPRecord[] = existing ? JSON.parse(existing) : [];
+      rsvps.unshift(record);
+      localStorage.setItem('school_anniversary_rsvps', JSON.stringify(rsvps));
     } catch {
       // ignore
     }
 
-    // Try syncing to Google Sheets if Webhook URL is set
-    const hasUrl = Boolean(getGoogleSheetUrl());
-    if (hasUrl) {
-      await sendRSVPToGoogleSheet(record);
-      setSyncStatus('synced');
-    } else {
-      setSyncStatus('saved_locally');
+    // Automatically send to Google Sheets
+    let sentToGoogle = false;
+    try {
+      sentToGoogle = await sendRSVPToGoogleSheet(record);
+    } catch {
+      sentToGoogle = false;
     }
 
     setIsSyncing(false);
+    setSyncStatus(sentToGoogle ? 'synced' : 'saved_locally');
+    setSubmitted(true);
 
     if (attending) {
-      try {
-        confetti({
-          particleCount: 80,
-          spread: 70,
-          origin: { y: 0.65 },
-          colors: ['#0284c7', '#38bdf8', '#e0f2fe', '#d4af37'],
-        });
-      } catch {
-        // ignore
-      }
+      confetti({
+        particleCount: 40,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#F59E0B', '#FCD34D', '#10B981', '#FFFFFF'],
+      });
     }
-
-    setSubmitted(true);
   };
 
+  const isSheetConfigured = Boolean(getGoogleSheetUrl());
+
   return (
-    <section id="rsvp-section" className="relative w-full bg-[#faf6f0] text-neutral-800 pb-16 sm:pb-20 px-4 sm:px-8">
+    <section id="rsvp-section" className="relative w-full bg-[#FAF6F0] text-neutral-800 py-16 sm:py-20 px-4 sm:px-8">
       <div className="max-w-md mx-auto">
-        {/* Title matching video frame 00:25 */}
+        {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center justify-center gap-1.5 text-sky-600 mb-1">
-            <UserCheck className="w-5 h-5" />
+          <div className="inline-flex items-center justify-center gap-1.5 text-amber-700 mb-1">
+            <UserCheck className="w-5 h-5 text-amber-600" />
           </div>
-          <h2 className="font-serif-title text-2xl sm:text-3xl text-neutral-800 font-normal">
+          <h2 className="font-serif-title text-2xl sm:text-3xl text-neutral-900 font-bold">
             Ирцээ бүртгүүлэх
           </h2>
-          <p className="text-xs sm:text-sm text-neutral-500 font-light mt-1">
+          <p className="text-xs sm:text-sm text-neutral-600 font-light mt-1">
             Ойн өдрөөс өмнө бүртгэлээ хийнэ үү
           </p>
 
-          {/* Quick link to connect Google Sheets */}
-          <div className="mt-2.5 flex justify-center">
+          {/* Google Sheets Connection Button */}
+          <div className="mt-3 flex justify-center">
             <button
               type="button"
               onClick={() => setShowConfigModal(true)}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-600/20 text-sky-800 text-[11px] font-medium hover:bg-sky-100 transition-colors shadow-xs"
+              className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold transition-all shadow-xs cursor-pointer ${
+                isSheetConfigured
+                  ? 'bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100'
+                  : 'bg-white border-2 border-amber-300 text-amber-950 hover:bg-amber-50'
+              }`}
             >
-              <FileSpreadsheet className="w-3.5 h-3.5 text-sky-600" />
+              <FileSpreadsheet className={`w-4 h-4 ${isSheetConfigured ? 'text-emerald-600' : 'text-emerald-700'}`} />
               <span>
-                {getGoogleSheetUrl() ? 'Google Sheets холбогдсон' : 'Google Sheets холбох'}
+                {isSheetConfigured ? 'Google Sheet холбогдсон' : 'Google Sheet холбох заавар'}
               </span>
-              <Settings className="w-3 h-3 text-sky-600 ml-0.5" />
+              <Settings className="w-3.5 h-3.5 text-amber-600 ml-0.5" />
             </button>
           </div>
         </motion.div>
 
-        {/* RSVP Card */}
+        {/* RSVP Card - Luminous White with Golden Border */}
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="bg-white rounded-2xl p-6 shadow-lg border border-sky-900/10"
+          className="bg-white rounded-2xl p-6 shadow-xl border-2 border-amber-200"
         >
           {submitted ? (
             <motion.div
@@ -144,10 +194,10 @@ export default function RSVPSection() {
               <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
-              <h3 className="font-serif-title text-lg font-medium text-neutral-800">
+              <h3 className="font-serif-title text-lg font-semibold text-neutral-900">
                 Бүртгэл амжилттай баталгаажлаа!
               </h3>
-              <p className="text-xs text-neutral-500 font-light leading-relaxed max-w-xs mx-auto">
+              <p className="text-xs text-neutral-600 leading-relaxed max-w-xs mx-auto">
                 {name} таны бүртгэлийг хүлээн авлаа.{' '}
                 {attending
                   ? `Бид таныг (${guestCount} хүн) тэсэн ядан хүлээж байна!`
@@ -155,10 +205,14 @@ export default function RSVPSection() {
               </p>
 
               {/* Status badge for Google Sheets sync */}
-              {syncStatus === 'synced' && (
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-medium">
-                  <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-600" />
+              {syncStatus === 'synced' ? (
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-medium">
+                  <FileSpreadsheet className="w-4 h-4 text-emerald-600" />
                   <span>Google Sheets хүснэгт рүү автоматаар нэмэгдлээ</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-50 border border-amber-200 text-amber-900 text-xs">
+                  <span>Бүртгэл амжилттай хадгалагдлаа</span>
                 </div>
               )}
 
@@ -166,7 +220,7 @@ export default function RSVPSection() {
                 <button
                   type="button"
                   onClick={() => setSubmitted(false)}
-                  className="mt-3 text-xs text-sky-700 underline underline-offset-4 cursor-pointer"
+                  className="mt-3 text-xs text-amber-700 hover:text-amber-800 underline underline-offset-4 cursor-pointer font-medium"
                 >
                   Мэдээлэл засах
                 </button>
@@ -176,7 +230,7 @@ export default function RSVPSection() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Name Input */}
               <div>
-                <label htmlFor="rsvp-name" className="block text-xs font-medium text-neutral-600 mb-1.5 text-left">
+                <label htmlFor="rsvp-name" className="block text-xs font-medium text-neutral-700 mb-1.5 text-left">
                   Таны нэр
                 </label>
                 <input
@@ -186,13 +240,13 @@ export default function RSVPSection() {
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Бүтэн нэрээ бичнэ үү"
                   required
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition"
                 />
               </div>
 
               {/* Phone Input */}
               <div>
-                <label htmlFor="rsvp-phone" className="block text-xs font-medium text-neutral-600 mb-1.5 text-left">
+                <label htmlFor="rsvp-phone" className="block text-xs font-medium text-neutral-700 mb-1.5 text-left">
                   Утасны дугаар
                 </label>
                 <input
@@ -201,13 +255,13 @@ export default function RSVPSection() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="Жишээ: 9911..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 transition"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-neutral-200 bg-neutral-50/50 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-500 transition"
                 />
               </div>
 
               {/* Attendance Radio Buttons */}
               <div className="space-y-2 text-left">
-                <span className="block text-xs font-medium text-neutral-600">
+                <span className="block text-xs font-medium text-neutral-700">
                   Та ирэх үү?
                 </span>
 
@@ -215,7 +269,7 @@ export default function RSVPSection() {
                   <label
                     className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
                       attending
-                        ? 'border-sky-600 bg-sky-50 text-neutral-900 font-medium'
+                        ? 'border-amber-400 bg-amber-50/80 text-neutral-900 font-semibold shadow-xs'
                         : 'border-neutral-200 bg-white text-neutral-600'
                     }`}
                   >
@@ -224,7 +278,7 @@ export default function RSVPSection() {
                       name="attending"
                       checked={attending}
                       onChange={() => setAttending(true)}
-                      className="accent-sky-600 w-4 h-4 cursor-pointer"
+                      className="accent-amber-600 w-4 h-4 cursor-pointer"
                     />
                     <span className="text-xs sm:text-sm">Тийм, заавал ирнэ</span>
                   </label>
@@ -232,7 +286,7 @@ export default function RSVPSection() {
                   <label
                     className={`flex items-center gap-3 p-3 rounded-xl border transition-all cursor-pointer ${
                       !attending
-                        ? 'border-sky-600 bg-sky-50 text-neutral-900 font-medium'
+                        ? 'border-amber-400 bg-amber-50/80 text-neutral-900 font-semibold shadow-xs'
                         : 'border-neutral-200 bg-white text-neutral-600'
                     }`}
                   >
@@ -241,7 +295,7 @@ export default function RSVPSection() {
                       name="attending"
                       checked={!attending}
                       onChange={() => setAttending(false)}
-                      className="accent-sky-600 w-4 h-4 cursor-pointer"
+                      className="accent-amber-600 w-4 h-4 cursor-pointer"
                     />
                     <span className="text-xs sm:text-sm">Харамсалтай нь очиж чадахгүй</span>
                   </label>
@@ -251,7 +305,7 @@ export default function RSVPSection() {
               {/* Guest Count Stepper */}
               {attending && (
                 <div className="flex items-center justify-between pt-1">
-                  <span className="text-xs font-medium text-neutral-600">
+                  <span className="text-xs font-medium text-neutral-700">
                     Хэдүүлээ ирэх вэ?
                   </span>
 
@@ -289,7 +343,7 @@ export default function RSVPSection() {
                 disabled={isSyncing}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-700 hover:to-blue-800 text-white font-medium text-sm sm:text-base shadow-md cursor-pointer hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-75"
+                className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-500 hover:brightness-105 text-amber-950 font-bold text-sm sm:text-base shadow-md cursor-pointer hover:shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-75"
               >
                 {isSyncing ? (
                   <>
@@ -307,7 +361,7 @@ export default function RSVPSection() {
 
       {/* Google Sheets Integration Modal */}
       {showConfigModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -315,22 +369,22 @@ export default function RSVPSection() {
           >
             <div className="flex items-center justify-between pb-3 border-b border-neutral-100 mb-4">
               <div className="flex items-center gap-2">
-                <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-700">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
                   <FileSpreadsheet className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-neutral-800">
-                    Google Sheets холболт
+                  <h3 className="text-sm font-semibold text-neutral-800">
+                    Google Sheets холболт тохируулах
                   </h3>
-                  <p className="text-[11px] text-neutral-500">
-                    Ирцийн бүртгэлийг өөрийн Google Excel рүү шууд авах
+                  <p className="text-[11px] text-neutral-400">
+                    Ирцийн мэдээллийг өөрийн Google Sheet рүү автоматаар авах
                   </p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setShowConfigModal(false)}
-                className="w-8 h-8 rounded-lg bg-neutral-100 text-neutral-500 hover:bg-neutral-200 flex items-center justify-center text-sm font-bold"
+                className="text-neutral-400 hover:text-neutral-600 text-sm p-1 cursor-pointer"
               >
                 ✕
               </button>
@@ -338,69 +392,101 @@ export default function RSVPSection() {
 
             <form onSubmit={handleSaveSheetUrl} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-neutral-700 mb-1">
-                  Google Apps Script Web App URL:
+                <label className="block text-xs font-semibold text-neutral-800 mb-1">
+                  Таны Google Web App URL (холбоос):
                 </label>
                 <input
                   type="url"
                   value={sheetUrlInput}
                   onChange={(e) => setSheetUrlInput(e.target.value)}
                   placeholder="https://script.google.com/macros/s/.../exec"
-                  className="w-full px-3 py-2 text-xs rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-mono"
+                  className="w-full px-3 py-2.5 rounded-xl border border-neutral-300 bg-neutral-50 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
                 />
-                <p className="text-[11px] text-neutral-500 mt-1">
-                  Таны Google Sheets-ээс гаргаж авсан Web App холбоос (URL).
+                <p className="text-[10px] text-neutral-500 mt-1">
+                  Энэ холбоосоо оруулаад <b>"Хадгалах"</b> дарснаар зочдын бүртгүүлсэн нэр, утас шууд таны хүснэгтэд орно.
                 </p>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Warning on common mistakes */}
+              <div className="bg-amber-50 border border-amber-300 rounded-xl p-3 text-xs text-amber-900 space-y-1.5">
+                <div className="flex items-center gap-1.5 font-bold text-amber-950">
+                  <AlertCircle className="w-4 h-4 text-amber-600" />
+                  <span>Бичигдэхгүй байх 3 түгээмэл шалтгаан:</span>
+                </div>
+                <ul className="list-disc list-inside space-y-1 text-[11px] text-amber-800 pl-1">
+                  <li>
+                    <b>Who has access:</b> заавал <b>Anyone</b> (Хүн бүр) байх ёстой (Only myself байвал хориглодог).
+                  </li>
+                  <li>
+                    <b>Шинэчилсэн хувилбар:</b> Кодоо сольсны дараа <b>Deploy &gt; Manage deployments</b> орж харандааны дүрс дээр дарж <b>Version: New version</b> болгож хадгалах хэрэгтэй.
+                  </li>
+                  <li>
+                    Холбоос нь <b>/exec</b> гэж төгссөн байх ёстой (<b>/edit</b> биш).
+                  </li>
+                </ul>
+              </div>
+
+              {/* Easy 3-Step Setup Guide */}
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-xs text-slate-800 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-bold text-slate-900">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    <span>Apps Script код (Шинэчилсэн)</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={copyAppsScriptCode}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white border border-slate-300 text-[11px] font-semibold text-slate-800 hover:bg-slate-100 transition-colors shadow-xs cursor-pointer"
+                  >
+                    {copiedCode ? (
+                      <>
+                        <Check className="w-3 h-3 text-emerald-600" />
+                        <span className="text-emerald-700 font-bold">Код хуулагдлаа</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3 h-3 text-amber-700" />
+                        <span>Код хуулах</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <ol className="list-decimal list-inside space-y-1.5 text-[11px] leading-relaxed text-slate-700 pl-1">
+                  <li>
+                    Google Sheet-ийнхээ <b>Extensions &gt; Apps Script</b> руу орно.
+                  </li>
+                  <li>
+                    Дээрх <b>"Код хуулах"</b> товчийг дарж, шинэчилсэн кодоо хуулаад <b>Save (Ctrl+S)</b> дарна.
+                  </li>
+                  <li>
+                    <b>Deploy &gt; Manage deployments</b> (эсвэл New deployment) дарж, <b>Who has access: Anyone</b> байгааг шалгаад Save хийнэ.
+                  </li>
+                  <li>
+                    Гарч ирсэн <b>Web app URL</b>-аа хуулж дээрх нүдэнд тавина.
+                  </li>
+                </ol>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowConfigModal(false)}
+                  className="px-3.5 py-2 rounded-xl text-xs text-neutral-600 hover:bg-neutral-100 cursor-pointer"
+                >
+                  Болих
+                </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-medium shadow-xs transition-colors flex items-center gap-1.5"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-105 text-white font-bold text-xs shadow-md cursor-pointer transition"
                 >
-                  <FileSpreadsheet className="w-3.5 h-3.5" />
-                  <span>Холболтыг хадгалах</span>
+                  {isUrlSaved ? 'Хадгалагдлаа!' : 'Холбоосыг хадгалах'}
                 </button>
-                {isUrlSaved && (
-                  <span className="text-xs text-emerald-600 font-medium animate-pulse">
-                    Амжилттай хадгалагдлаа!
-                  </span>
-                )}
               </div>
             </form>
-
-            {/* Step by step guide */}
-            <div className="mt-6 pt-4 border-t border-neutral-100 bg-neutral-50 -mx-6 -mb-6 p-6 rounded-b-2xl">
-              <div className="flex items-center gap-1.5 text-xs font-semibold text-neutral-800 mb-2">
-                <HelpCircle className="w-4 h-4 text-emerald-600" />
-                <span>Google Sheets холбоосыг хэрхэн бэлдэх вэ? (3 алхам)</span>
-              </div>
-              <ol className="text-xs text-neutral-600 space-y-2 list-decimal list-inside leading-relaxed font-light">
-                <li>
-                  <strong className="font-medium text-neutral-800">Google Sheet үүсгэх:</strong> Дээд багануудад <code>Огноо</code>, <code>Нэр</code>, <code>Ирэх эсэх</code>, <code>Хүний тоо</code>, <code>Утас</code> гэж нэрлэнэ.
-                </li>
-                <li>
-                  <strong className="font-medium text-neutral-800">Apps Script нээх:</strong> Цэснээс <em>Өргөтгөл (Extensions) &rarr; Apps Script</em> сонгоод доорх 7 мөр кодыг хуулж тавина:
-                  <pre className="mt-1.5 p-2.5 bg-neutral-900 text-emerald-300 text-[10px] rounded-lg overflow-x-auto font-mono">
-{`function doPost(e) {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
-  var d = JSON.parse(e.postData.contents);
-  sheet.appendRow([d.date, d.name, d.attending, d.guestCount, d.phone]);
-  return ContentService.createTextOutput("OK");
-}`}
-                  </pre>
-                </li>
-                <li>
-                  <strong className="font-medium text-neutral-800">Deploy хийх:</strong> Баруун дээд талын <em>Deploy &rarr; New deployment</em> дараад:
-                  <br />- Төрөл: <strong>Web app</strong>
-                  <br />- Who has access: <strong>Anyone</strong> гэж сонгоод Deploy дарж гаргаж авсан <code>https://script.google.com/macros/s/.../exec</code> холбоосоо дээрх талбарт хуулна.
-                </li>
-              </ol>
-            </div>
           </motion.div>
         </div>
       )}
     </section>
   );
 }
-
