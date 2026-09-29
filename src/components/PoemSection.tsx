@@ -20,7 +20,7 @@ export default function PoemSection() {
           className="inline-flex items-center gap-1.5 text-amber-800 text-xs tracking-widest uppercase mb-3 font-mono font-bold bg-white/80 px-3.5 py-1 rounded-full border border-amber-200 shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>50 жилийн ойн шүлэг</span>
+          <span>Мэндчилгээ</span>
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
         </motion.div>
 
@@ -37,17 +37,12 @@ export default function PoemSection() {
           <div className="absolute inset-3 border border-amber-300/40 rounded-2xl pointer-events-none" />
 
           {/* Top Calligraphy Symbol */}
-          <div className="text-amber-500 text-xl mb-3 select-none font-serif">
+          <div className="text-amber-500 text-xl mb-4 select-none font-serif">
             ✦ ✦ ✦
           </div>
 
-          {/* Poem Title */}
-          <h2 className="font-calligraphy text-2xl sm:text-3xl text-amber-900 font-semibold mb-6">
-            Эрдмийн Өргөө
-          </h2>
-
-          {/* Poem Stanzas */}
-          <div className="space-y-4 font-serif-poem text-base sm:text-lg leading-relaxed text-slate-700 font-normal tracking-wide">
+          {/* Greeting Stanzas */}
+          <div className="space-y-3 font-serif-poem text-base sm:text-lg leading-relaxed text-slate-800 font-normal tracking-wide">
             {WEDDING_DATA.invitationPoem.map((line, index) => (
               <motion.p
                 key={index}
@@ -69,7 +64,7 @@ export default function PoemSection() {
 
           {/* Dedication Subtitle */}
           <p className="mt-4 text-xs tracking-widest text-amber-800 uppercase font-mono font-semibold">
-            62-р сургуулийн хамт олон ба төгсөгчдөдөө зориулав
+          
           </p>
         </motion.div>
       </div>

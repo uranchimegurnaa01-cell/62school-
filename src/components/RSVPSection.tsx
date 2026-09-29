@@ -80,9 +80,7 @@ export default function RSVPSection() {
   }
 }
 
-// Тест хийхэд зориулсан функц (хөтчөөс шалгахад)
-function doGet(e) {
-  return ContentService.createTextOutput("Google Apps Script амжилттай ажиллаж байна!");
+
 }`;
     navigator.clipboard.writeText(code);
     setCopiedCode(true);
@@ -377,7 +375,7 @@ function doGet(e) {
                     Google Sheets холболт тохируулах
                   </h3>
                   <p className="text-[11px] text-neutral-400">
-                    Ирцийн мэдээллийг өөрийн Google Sheet рүү автоматаар авах
+                   
                   </p>
                 </div>
               </div>
@@ -399,7 +397,7 @@ function doGet(e) {
                   type="url"
                   value={sheetUrlInput}
                   onChange={(e) => setSheetUrlInput(e.target.value)}
-                  placeholder="https://script.google.com/macros/s/.../exec"
+                  placeholder="https://docs.google.com/spreadsheets/d/1SGV0N9-4wap0nxDI4lf3agvaikq34qcDrmknp_5JjIw/edit?gid=0#gid=0"
                   className="w-full px-3 py-2.5 rounded-xl border border-neutral-300 bg-neutral-50 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono"
                 />
                 <p className="text-[10px] text-neutral-500 mt-1">

@@ -152,10 +152,7 @@ export default function LoveStoryCarousel() {
                     <p className="text-xs font-bold text-neutral-800 mb-0.5">
                       {currentSlide.title}
                     </p>
-                    <p className="text-[11px] text-red-700 font-medium underline underline-offset-2">
-                      Зургаа сонгож оруулах (IMG_7570.jpeg)
-                    </p>
-                  </div>
+                       </div>
                 )}
 
                 {/* Subtle camera icon on top left to replace or upload image anytime */}

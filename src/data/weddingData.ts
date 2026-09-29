@@ -18,16 +18,14 @@ export const WEDDING_DATA = {
   // If provided, all RSVPs will automatically be sent to your Google Sheet!
   googleSheetsWebhookUrl: 'https://script.google.com/macros/s/AKfycbyKyZY9IZbcQgVFpBf8pFU-Xtf-9UqxJp8Kny93wiS2sa6DZoLJn5m7ZGhfJdsB4BYO/exec',
 
-  // Cover & Invitation poem from video
+  // Cover & Invitation poem / greeting
   invitationPoem: [
-    'Мэдлэгийн их далайд хөлөг онгоц шиг аялж,',
-    'Мөрөөдлийн цэнхэр алсад далавч дэлгэн нисэхэд',
-    'Эрдмийн түлхүүр атгуулсан ачтай сайхан сургууль минь,',
-    'Эх дэлхийд намайг хүн болгосон өргөө минь',
-    '',
-    'Энэхүү мөчийг',
-    'Эрхэм таньтай хамт хуваалцахыг урьж',
-    'байна.'
+    'Эрдэм мэдлэгийн оч бадрааж',
+    'эх орныхоо ирээдүйг бэлтгэсэн',
+    'хагас зуун жилийн түүхтэй',
+    '62 дугаар сургуулийн хөгжил дэвшил,',
+    'амжилт бүтээлийн буухиаг хамтдаа бүтээлцсэн',
+    'таньд баярын мэнд хүргэе!'
   ],
 
   // Story Slides

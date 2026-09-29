@@ -104,7 +104,7 @@ export default function ClosingSection({ onReopenEnvelope }: ClosingSectionProps
             Эрдэм мэдлэгийн оч бадрааж, ирээдүйн эздийг бэлтгэсэн сургуулийн маань түүхэн замнал, эрдмийн өргөөний 50 жилийн ой тохиож байна.
           </p>
           <h2 className="font-serif-title text-xl sm:text-2xl font-bold text-slate-900 leading-snug px-4">
-            Үе үеийн төгсөгчид, багш та бүхэнтэйгээ уулзахыг тэсэн ядан хүлээж байна!
+      
           </h2>
           <p className="font-calligraphy text-xl sm:text-2xl text-amber-800">
             {eventDetails.title}
