@@ -1,7 +1,8 @@
-import { useState, useRef, useEffect, TouchEvent, ChangeEvent, FormEvent } from 'react';
+import { useState, useRef, useEffect, TouchEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ChevronLeft, ChevronRight, Sparkles, Camera, Upload, Link as LinkIcon, X, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Sparkles, Camera, Upload } from 'lucide-react';
 import { WEDDING_DATA } from '../data/weddingData';
+import GoogleDrivePickerModal from './GoogleDrivePickerModal';
 
 // Helper to convert Google Drive URLs to direct image CDN links
 const normalizeImageUrl = (url: string): string => {
@@ -17,7 +18,6 @@ export default function LoveStoryCarousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const slides = WEDDING_DATA.storySlides;
   const touchStartX = useRef<number | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Allow custom uploaded image per slide persisted in browser
   const [customImages, setCustomImages] = useState<Record<string, string>>(() => {
@@ -30,19 +30,15 @@ export default function LoveStoryCarousel() {
   });
   const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
-  // Link input modal state
+  // Google Drive & custom image modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [inputUrl, setInputUrl] = useState('');
 
   const currentSlide = slides[currentIndex];
   const rawImage = customImages[currentSlide.id] || currentSlide.image;
   const activeImage = normalizeImageUrl(rawImage);
   const hasError = imageErrors[currentSlide.id] && !customImages[currentSlide.id];
 
-  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
+  const handleUploadFile = (file: File) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const result = event.target?.result as string;
@@ -58,19 +54,14 @@ export default function LoveStoryCarousel() {
           return updated;
         });
         setImageErrors((prev) => ({ ...prev, [slideId]: false }));
-        setIsModalOpen(false);
       }
     };
     reader.readAsDataURL(file);
-    e.target.value = '';
   };
 
-  const handleSaveUrl = (e: FormEvent) => {
-    e.preventDefault();
-    if (!inputUrl.trim()) return;
-
+  const handleSelectImageUrl = (url: string) => {
     const slideId = currentSlide.id;
-    const cleanUrl = inputUrl.trim();
+    const cleanUrl = url.trim();
     setCustomImages((prev) => {
       const updated = { ...prev, [slideId]: cleanUrl };
       try {
@@ -81,8 +72,6 @@ export default function LoveStoryCarousel() {
       return updated;
     });
     setImageErrors((prev) => ({ ...prev, [slideId]: false }));
-    setInputUrl('');
-    setIsModalOpen(false);
   };
 
   const handleResetSlideImage = () => {
@@ -98,7 +87,6 @@ export default function LoveStoryCarousel() {
       return updated;
     });
     setImageErrors((prev) => ({ ...prev, [slideId]: false }));
-    setIsModalOpen(false);
   };
 
   const prevSlide = () => {
@@ -280,116 +268,16 @@ export default function LoveStoryCarousel() {
           </button>
         </div>
 
-        {/* Hidden File Input for uploading photo */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          className="hidden"
-          onChange={handleImageFileChange}
+        {/* Google Drive & Image Picker Modal */}
+        <GoogleDrivePickerModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          slideTitle={currentSlide.title}
+          currentHasCustomImage={!!customImages[currentSlide.id]}
+          onSelectImageUrl={handleSelectImageUrl}
+          onUploadFile={handleUploadFile}
+          onResetImage={handleResetSlideImage}
         />
-
-        {/* Modal for Inserting Image by Link or File */}
-        <AnimatePresence>
-          {isModalOpen && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl border-2 border-red-200 text-left"
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-red-100">
-                  <div className="flex items-center gap-2">
-                    <div className="p-1.5 rounded-lg bg-red-100 text-red-700">
-                      <Camera className="w-4 h-4" />
-                    </div>
-                    <h4 className="font-serif-title text-base font-bold text-neutral-900">
-                      Зураг оруулах / солих
-                    </h4>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsModalOpen(false)}
-                    className="p-1 rounded-full text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition cursor-pointer"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </div>
-
-                <p className="text-xs text-neutral-600 mt-2.5 mb-4">
-                  Слайд: <strong className="text-neutral-900">{currentSlide.title}</strong>
-                </p>
-
-                {/* Option 1: Paste Copied Link */}
-                <form onSubmit={handleSaveUrl} className="space-y-2 mb-4">
-                  <label className="block text-xs font-bold text-neutral-700">
-                    1. Хуулсан линкээр оруулах:
-                  </label>
-                  <div className="flex gap-2">
-                    <div className="relative flex-1">
-                      <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-neutral-400">
-                        <LinkIcon className="w-3.5 h-3.5" />
-                      </div>
-                      <input
-                        type="url"
-                        value={inputUrl}
-                        onChange={(e) => setInputUrl(e.target.value)}
-                        placeholder="Google Drive линк эсвэл зургийн URL..."
-                        className="w-full pl-8 pr-2.5 py-2 text-xs rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 bg-neutral-50/50"
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      disabled={!inputUrl.trim()}
-                      className="px-3 py-2 bg-red-700 hover:bg-red-800 disabled:opacity-50 text-white rounded-xl text-xs font-semibold shadow-sm transition cursor-pointer"
-                    >
-                      Оруулах
-                    </button>
-                  </div>
-                  <span className="block text-[11px] text-neutral-500">
-                    Google Drive-ийн хуулсан линк шууд автоматаар танигдана.
-                  </span>
-                </form>
-
-                <div className="relative flex items-center justify-center my-3">
-                  <div className="border-t border-neutral-200 w-full" />
-                  <span className="bg-white px-2 text-[10px] text-neutral-400 uppercase font-bold tracking-wider">
-                    эсвэл
-                  </span>
-                </div>
-
-                {/* Option 2: Upload File from Device */}
-                <div className="space-y-2">
-                  <label className="block text-xs font-bold text-neutral-700">
-                    2. Төхөөрөмжөөс файл сонгох:
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-full py-2.5 px-3 rounded-xl border-2 border-dashed border-red-300 bg-red-50/50 hover:bg-red-100/50 text-red-800 font-semibold text-xs flex items-center justify-center gap-2 transition cursor-pointer"
-                  >
-                    <Upload className="w-4 h-4 text-red-600" />
-                    <span>Утас / компьютерээс зураг сонгох</span>
-                  </button>
-                </div>
-
-                {/* Reset custom image button if exists */}
-                {customImages[currentSlide.id] && (
-                  <button
-                    type="button"
-                    onClick={handleResetSlideImage}
-                    className="w-full mt-3 py-1.5 text-[11px] text-neutral-500 hover:text-red-700 flex items-center justify-center gap-1.5 transition cursor-pointer"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>Анхны зураг руу буцаах</span>
-                  </button>
-                )}
-              </motion.div>
-            </div>
-          )}
-        </AnimatePresence>
       </div>
     </section>
   );
