@@ -68,14 +68,16 @@ export default function CoverSection() {
           <span className="h-0.5 w-6 sm:w-10 bg-amber-400" />
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
-          className="text-xs sm:text-sm tracking-[0.25em] text-amber-800 font-mono font-semibold"
-        >
-          {WEDDING_DATA.formattedDate}
-        </motion.p>
+        {WEDDING_DATA.formattedDate ? (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+            className="text-xs sm:text-sm tracking-[0.25em] text-amber-800 font-mono font-semibold"
+          >
+            {WEDDING_DATA.formattedDate}
+          </motion.p>
+        ) : null}
       </div>
 
       {/* 3D Glassmorphism Jubilee Medallion Stage */}

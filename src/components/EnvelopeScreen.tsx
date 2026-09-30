@@ -138,9 +138,15 @@ export default function EnvelopeScreen({ onOpen }: EnvelopeScreenProps) {
             <h1 className="font-serif-title text-xl sm:text-2xl text-slate-900 font-extrabold mb-1">
               62 дугаар сургууль
             </h1>
-            <p className="font-serif-title text-xs sm:text-sm text-amber-800 font-bold mb-2">
-              {WEDDING_DATA.formattedDate} · {WEDDING_DATA.formattedTime}
-            </p>
+            {WEDDING_DATA.formattedDate ? (
+              <p className="font-serif-title text-xs sm:text-sm text-amber-800 font-bold mb-2">
+                {WEDDING_DATA.formattedDate} · {WEDDING_DATA.formattedTime}
+              </p>
+            ) : WEDDING_DATA.formattedTime ? (
+              <p className="font-serif-title text-xs sm:text-sm text-amber-800 font-bold mb-2">
+                {WEDDING_DATA.formattedTime} цагт
+              </p>
+            ) : null}
             <div className="text-[11px] text-slate-600 font-medium leading-relaxed max-w-[210px]">
               Эрдмийн өргөөний хагас зуун жилийн баярын хүндэтгэлийн хуудас
             </div>

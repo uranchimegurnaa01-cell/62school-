@@ -3,8 +3,8 @@ import { StorySlide, ScheduleItem, WeddingRequestItem, GuestWish } from '../type
 export const WEDDING_DATA = {
   groom: '50 жил',
   bride: '',
-  weddingDate: '2026-10-07T17:00:00',
-  formattedDate: '2026 . 10 . 07',
+  weddingDate: '2026-10-07T17:00:00+08:00',
+  formattedDate: '',
   formattedTime: '17:00',
   venueName: 'The Corporate',
   locationCity: 'Улаанбаатар хот, Монгол',
@@ -63,7 +63,7 @@ export const WEDDING_DATA = {
       date: '2015.09.01',
       title: 'Сайн дурын үйл ажиллагаа',
       description: 'Монголын Улаан Загалмайн нийгэмлэг, хүмүүнлэгийн сайн дурын үйлс...',
-      image: '/IMG_7570.jpeg',
+      image: 'https://drive.google.com/file/d/10C2fhVYU_u3p8iH8f3c4-tgz4LkRaHsd/view?usp=sharing',
     }
   ] as StorySlide[],
 

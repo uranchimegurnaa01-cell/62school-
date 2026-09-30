@@ -3,7 +3,6 @@ import EnvelopeScreen from './components/EnvelopeScreen';
 import CoverSection from './components/CoverSection';
 import PoemSection from './components/PoemSection';
 import LoveStoryCarousel from './components/LoveStoryCarousel';
-import CountdownSection from './components/CountdownSection';
 import LocationSection from './components/LocationSection';
 import RSVPSection from './components/RSVPSection';
 import ClosingSection from './components/ClosingSection';
@@ -84,7 +83,6 @@ export default function App() {
         <CoverSection />
         <PoemSection />
         <LoveStoryCarousel />
-        <CountdownSection />
         <LocationSection />
         <RSVPSection />
         <ClosingSection onReopenEnvelope={handleReopenEnvelope} />

@@ -10,12 +10,14 @@ interface TimeLeft {
   seconds: number;
 }
 
-export default function CountdownSection() {
-  const targetDate = new Date(WEDDING_DATA.weddingDate).getTime();
+// 2026 оны 10 сарын 07-ны 17:00 цаг (Монголын / Улаанбаатарын цагаар UTC+8 -> 09:00 UTC)
+// Safari болон бүх төрлийн гар утсанд алдаагүй, 100% нарийвчлалтай тооцоолно
+const TARGET_TIMESTAMP = Date.UTC(2026, 9, 7, 9, 0, 0);
 
+export default function CountdownSection() {
   const calculateTimeLeft = (): TimeLeft => {
-    const now = new Date().getTime();
-    const difference = targetDate - now;
+    const now = Date.now();
+    const difference = TARGET_TIMESTAMP - now;
 
     if (difference <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0 };
@@ -24,7 +26,7 @@ export default function CountdownSection() {
     return {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
       hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-      minutes: Math.floor((difference / 1000 / 60) % 60),
+      minutes: Math.floor((difference / (1000 * 60)) % 60),
       seconds: Math.floor((difference / 1000) % 60),
     };
   };
@@ -32,6 +34,8 @@ export default function CountdownSection() {
   const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft);
 
   useEffect(() => {
+    // Тоолуурыг нээгдмэгц шууд шинэчлэн явуулна
+    setTimeLeft(calculateTimeLeft());
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft());
     }, 1000);
@@ -49,6 +53,8 @@ export default function CountdownSection() {
     { label: 'Секунд', value: formatNum(timeLeft.seconds) },
   ];
 
+  const isEventStarted = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+
   return (
     <section id="countdown-section" className="relative w-full bg-[#FAF6F0] text-slate-800 pb-16 px-4 sm:px-8">
       <div className="max-w-md mx-auto text-center">
@@ -61,10 +67,10 @@ export default function CountdownSection() {
         >
           <div className="inline-flex items-center justify-center gap-1.5 text-amber-700 mb-1">
             <Clock className="w-4 h-4 text-amber-600" />
-            <span className="text-xs font-bold uppercase tracking-widest text-amber-800">Хугацаа</span>
+            <span className="text-xs font-bold uppercase tracking-widest text-amber-800">Хүлээн авалтын хугацаа</span>
           </div>
           <h2 className="font-serif-title text-2xl sm:text-3xl text-slate-900 font-bold">
-            Ойн баяр хүртэл
+            {isEventStarted ? 'Хүлээн авалт эхэллээ' : 'Хүлээн авалт эхлэхэд'}
           </h2>
           <div className="w-16 h-1 bg-amber-400 rounded-full mx-auto mt-2" />
         </motion.div>
@@ -100,10 +106,10 @@ export default function CountdownSection() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.5 }}
-          className="mt-6 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-semibold shadow-xs"
+          className="mt-6 inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-white border border-amber-300 text-amber-900 text-xs font-semibold shadow-xs"
         >
           <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>{WEDDING_DATA.formattedDate} · {WEDDING_DATA.venueName}</span>
+          <span>{WEDDING_DATA.formattedDate ? `${WEDDING_DATA.formattedDate} · ` : ''}{WEDDING_DATA.formattedTime ? `${WEDDING_DATA.formattedTime} цагт · ` : ''}{WEDDING_DATA.venueName} Hotel</span>
         </motion.div>
       </div>
     </section>

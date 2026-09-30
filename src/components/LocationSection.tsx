@@ -47,7 +47,7 @@ export default function LocationSection() {
             {WEDDING_DATA.venueName}
           </p>
           <p className="text-xs sm:text-sm text-neutral-600 font-light">
-            {WEDDING_DATA.locationCity}
+            {WEDDING_DATA.formattedTime ? `${WEDDING_DATA.formattedTime} цагт · ` : ''}{WEDDING_DATA.locationCity}
           </p>
         </motion.div>
 
